@@ -48,17 +48,17 @@ class _ReactionPickerState extends State<ReactionPicker>
     }
 
     final child = Material(
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(16),
       color: chatThemeData.colorTheme.barsBg,
       clipBehavior: Clip.hardEdge,
-      child: Padding(
+      child: Container(
+        height: 56,
         padding: const EdgeInsets.symmetric(
-          horizontal: 16,
+          horizontal: 18,
           vertical: 8,
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: reactionIcons
               .map<Widget>((reactionIcon) {
@@ -83,7 +83,7 @@ class _ReactionPickerState extends State<ReactionPicker>
                   child: RawMaterialButton(
                     elevation: 0,
                     shape: ContinuousRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     constraints: const BoxConstraints.tightFor(
                       height: 24,
@@ -114,7 +114,7 @@ class _ReactionPickerState extends State<ReactionPicker>
                 );
               })
               .insertBetween(const SizedBox(
-                width: 16,
+                width: 14,
               ))
               .toList(),
         ),

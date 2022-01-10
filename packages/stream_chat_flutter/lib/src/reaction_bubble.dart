@@ -52,6 +52,7 @@ class ReactionBubble extends StatelessWidget {
     final totalReactions = reactions.length;
     final offset =
         totalReactions > 1 ? 16.0.mirrorConditionally(flipTail) : 2.0;
+
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -82,7 +83,7 @@ class ReactionBubble extends StatelessWidget {
                   children: [
                     if (constraints.maxWidth < double.infinity)
                       ...reactions
-                          .take((constraints.maxWidth) ~/ 24)
+                          .take((constraints.maxWidth) ~/ 26)
                           .map((reaction) => _buildReaction(
                                 reactionIcons,
                                 reaction,
@@ -126,15 +127,15 @@ class ReactionBubble extends StatelessWidget {
     final userId = StreamChat.of(context).currentUser?.id;
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 4,
+        horizontal: 2,
       ),
       child: reactionIcon != null
           ? ConstrainedBox(
-              constraints: BoxConstraints.tight(const Size.square(16)),
+              constraints: BoxConstraints.tight(const Size.square(22)),
               child: reactionIcon.builder(
                 context,
                 !highlightOwnReactions || reaction.user?.id == userId,
-                16,
+                20,
               ),
             )
           : Icon(
