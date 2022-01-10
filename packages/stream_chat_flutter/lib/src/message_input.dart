@@ -1524,38 +1524,16 @@ class MessageInputState extends State<MessageInput> {
         builder: (_) => Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
+            const SizedBox(height: 15),
             ListTile(
-              title: Text(
-                context.translations.addAFileLabel,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.image),
+              leading: const Icon(Icons.photo_library_outlined),
               title: Text(context.translations.uploadAPhotoLabel),
               onTap: () {
                 pickFile(DefaultAttachmentTypes.image);
                 Navigator.pop(context);
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.video_library),
-              title: Text(context.translations.uploadAVideoLabel),
-              onTap: () {
-                pickFile(DefaultAttachmentTypes.video);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.insert_drive_file),
-              title: Text(context.translations.uploadAFileLabel),
-              onTap: () {
-                pickFile(DefaultAttachmentTypes.file);
-                Navigator.pop(context);
-              },
-            ),
+            const SizedBox(height: 25),
           ],
         ),
       );
