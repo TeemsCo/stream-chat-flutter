@@ -278,23 +278,7 @@ class StreamChatThemeData {
           type: 'love',
           builder: (context, highlighted, size) => buildReactionEmojiIcon(
             context,
-            emoji: '😍',
-            highlighted: highlighted,
-          ),
-        ),
-        ReactionIcon(
-          type: 'smile',
-          builder: (context, highlighted, _) => buildReactionEmojiIcon(
-            context,
-            emoji: '🙂',
-            highlighted: highlighted,
-          ),
-        ),
-        ReactionIcon(
-          type: 'cool',
-          builder: (context, highlighted, _) => buildReactionEmojiIcon(
-            context,
-            emoji: '😎',
+            emoji: '❤️',
             highlighted: highlighted,
           ),
         ),
@@ -307,81 +291,29 @@ class StreamChatThemeData {
           ),
         ),
         ReactionIcon(
-          type: 'surprise',
+          type: 'dislike',
           builder: (context, highlighted, _) => buildReactionEmojiIcon(
             context,
-            emoji: '😮',
+            emoji: '👎',
             highlighted: highlighted,
           ),
         ),
         ReactionIcon(
-          type: 'hurt',
+          type: 'lol',
           builder: (context, highlighted, _) => buildReactionEmojiIcon(
             context,
-            emoji: '🤕',
+            emoji: '😂',
             highlighted: highlighted,
           ),
         ),
-        // ReactionIcon(
-        //   type: 'love',
-        //   builder: (context, highlighted, size) {
-        //     final theme = StreamChatTheme.of(context);
-        //     return StreamSvgIcon.loveReaction(
-        //       color: highlighted
-        //           ? theme.colorTheme.accentPrimary
-        //           : theme.primaryIconTheme.color!.withOpacity(0.5),
-        //       size: size,
-        //     );
-        //   },
-        // ),
-        // ReactionIcon(
-        //   type: 'like',
-        //   builder: (context, highlighted, size) {
-        //     final theme = StreamChatTheme.of(context);
-        //     return StreamSvgIcon.thumbsUpReaction(
-        //       color: highlighted
-        //           ? theme.colorTheme.accentPrimary
-        //           : theme.primaryIconTheme.color!.withOpacity(0.5),
-        //       size: size,
-        //     );
-        //   },
-        // ),
-        // ReactionIcon(
-        //   type: 'sad',
-        //   builder: (context, highlighted, size) {
-        //     final theme = StreamChatTheme.of(context);
-        //     return StreamSvgIcon.thumbsDownReaction(
-        //       color: highlighted
-        //           ? theme.colorTheme.accentPrimary
-        //           : theme.primaryIconTheme.color!.withOpacity(0.5),
-        //       size: size,
-        //     );
-        //   },
-        // ),
-        // ReactionIcon(
-        //   type: 'haha',
-        //   builder: (context, highlighted, size) {
-        //     final theme = StreamChatTheme.of(context);
-        //     return StreamSvgIcon.lolReaction(
-        //       color: highlighted
-        //           ? theme.colorTheme.accentPrimary
-        //           : theme.primaryIconTheme.color!.withOpacity(0.5),
-        //       size: size,
-        //     );
-        //   },
-        // ),
-        // ReactionIcon(
-        //   type: 'wow',
-        //   builder: (context, highlighted, size) {
-        //     final theme = StreamChatTheme.of(context);
-        //     return StreamSvgIcon.wutReaction(
-        //       color: highlighted
-        //           ? theme.colorTheme.accentPrimary
-        //           : theme.primaryIconTheme.color!.withOpacity(0.5),
-        //       size: size,
-        //     );
-        //   },
-        // ),
+        ReactionIcon(
+          type: 'wow',
+          builder: (context, highlighted, _) => buildReactionEmojiIcon(
+            context,
+            emoji: '⁉️',
+            highlighted: highlighted,
+          ),
+        ),
       ],
       galleryHeaderTheme: GalleryHeaderThemeData(
         closeButtonColor: colorTheme.textHighEmphasis,

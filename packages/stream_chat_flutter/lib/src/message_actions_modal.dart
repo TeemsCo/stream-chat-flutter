@@ -153,32 +153,35 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
                   topLeft: Radius.circular(16),
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 20),
-                  if (widget.showReplyMessage &&
-                      widget.message.status == MessageSendingStatus.sent)
-                    _buildReplyButton(context),
-                  if (widget.showThreadReplyMessage &&
-                      (widget.message.status == MessageSendingStatus.sent) &&
-                      widget.message.parentId == null)
-                    _buildThreadReplyButton(context),
-                  if (widget.showResendMessage) _buildResendMessage(context),
-                  if (widget.showEditMessage) _buildEditMessage(context),
-                  if (widget.showDeleteMessage) _buildDeleteButton(context),
-                  if (widget.showCopyMessage) _buildCopyButton(context),
-                  ...widget.customActions.map(
-                    (action) => _buildCustomAction(
-                      context,
-                      action,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 20),
+                    if (widget.showReplyMessage &&
+                        widget.message.status == MessageSendingStatus.sent)
+                      _buildReplyButton(context),
+                    if (widget.showThreadReplyMessage &&
+                        (widget.message.status == MessageSendingStatus.sent) &&
+                        widget.message.parentId == null)
+                      _buildThreadReplyButton(context),
+                    if (widget.showResendMessage) _buildResendMessage(context),
+                    if (widget.showEditMessage) _buildEditMessage(context),
+                    if (widget.showDeleteMessage) _buildDeleteButton(context),
+                    if (widget.showCopyMessage) _buildCopyButton(context),
+                    ...widget.customActions.map(
+                      (action) => _buildCustomAction(
+                        context,
+                        action,
+                      ),
                     ),
+                    if (widget.showFlagButton) _buildFlagButton(context),
+                    if (widget.showPinButton) _buildPinButton(context),
+                    const SizedBox(height: 20),
+                  ].insertBetween(
+                    const SizedBox(height: 10),
                   ),
-                  if (widget.showFlagButton) _buildFlagButton(context),
-                  if (widget.showPinButton) _buildPinButton(context),
-                  const SizedBox(height: 20),
-                ].insertBetween(
-                  const SizedBox(height: 10),
                 ),
               ),
             ),
@@ -416,7 +419,7 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
         padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 16),
         child: Row(
           children: [
-            StreamSvgIcon.delete(),
+            const Icon(Icons.delete_outlined, color: Color(0xFF666666)),
             const SizedBox(width: 16),
             Text(
               context.translations.toggleDeleteRetryDeleteMessageText(
@@ -441,10 +444,7 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
         padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 16),
         child: Row(
           children: [
-            StreamSvgIcon.copy(
-              size: 24,
-              color: streamChatThemeData.primaryIconTheme.color,
-            ),
+            const Icon(Icons.copy_all_outlined, color: Color(0xFF666666)),
             const SizedBox(width: 16),
             Text(
               context.translations.copyMessageLabel,
@@ -467,9 +467,7 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
         padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 16),
         child: Row(
           children: [
-            StreamSvgIcon.edit(
-              color: streamChatThemeData.primaryIconTheme.color,
-            ),
+            const Icon(Icons.edit_outlined, color: Color(0xFF666666)),
             const SizedBox(width: 16),
             Text(
               context.translations.editMessageLabel,
