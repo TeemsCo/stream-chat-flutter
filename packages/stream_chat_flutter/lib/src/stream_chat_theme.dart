@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide TextTheme;
+import 'package:stream_chat_flutter/build_reaction_emoji.dart';
 import 'package:stream_chat_flutter/src/channel_preview.dart';
 import 'package:stream_chat_flutter/src/gradient_avatar.dart';
 import 'package:stream_chat_flutter/src/message_input.dart';
@@ -275,63 +276,43 @@ class StreamChatThemeData {
       reactionIcons: [
         ReactionIcon(
           type: 'love',
-          builder: (context, highlighted, size) {
-            final theme = StreamChatTheme.of(context);
-            return StreamSvgIcon.loveReaction(
-              color: highlighted
-                  ? theme.colorTheme.accentPrimary
-                  : theme.primaryIconTheme.color!.withOpacity(0.5),
-              size: size,
-            );
-          },
+          builder: (context, highlighted, size) => buildReactionEmojiIcon(
+            context,
+            emoji: '❤️',
+            highlighted: highlighted,
+          ),
         ),
         ReactionIcon(
           type: 'like',
-          builder: (context, highlighted, size) {
-            final theme = StreamChatTheme.of(context);
-            return StreamSvgIcon.thumbsUpReaction(
-              color: highlighted
-                  ? theme.colorTheme.accentPrimary
-                  : theme.primaryIconTheme.color!.withOpacity(0.5),
-              size: size,
-            );
-          },
+          builder: (context, highlighted, _) => buildReactionEmojiIcon(
+            context,
+            emoji: '👍',
+            highlighted: highlighted,
+          ),
         ),
         ReactionIcon(
-          type: 'sad',
-          builder: (context, highlighted, size) {
-            final theme = StreamChatTheme.of(context);
-            return StreamSvgIcon.thumbsDownReaction(
-              color: highlighted
-                  ? theme.colorTheme.accentPrimary
-                  : theme.primaryIconTheme.color!.withOpacity(0.5),
-              size: size,
-            );
-          },
+          type: 'dislike',
+          builder: (context, highlighted, _) => buildReactionEmojiIcon(
+            context,
+            emoji: '👎',
+            highlighted: highlighted,
+          ),
         ),
         ReactionIcon(
-          type: 'haha',
-          builder: (context, highlighted, size) {
-            final theme = StreamChatTheme.of(context);
-            return StreamSvgIcon.lolReaction(
-              color: highlighted
-                  ? theme.colorTheme.accentPrimary
-                  : theme.primaryIconTheme.color!.withOpacity(0.5),
-              size: size,
-            );
-          },
+          type: 'lol',
+          builder: (context, highlighted, _) => buildReactionEmojiIcon(
+            context,
+            emoji: '😂',
+            highlighted: highlighted,
+          ),
         ),
         ReactionIcon(
           type: 'wow',
-          builder: (context, highlighted, size) {
-            final theme = StreamChatTheme.of(context);
-            return StreamSvgIcon.wutReaction(
-              color: highlighted
-                  ? theme.colorTheme.accentPrimary
-                  : theme.primaryIconTheme.color!.withOpacity(0.5),
-              size: size,
-            );
-          },
+          builder: (context, highlighted, _) => buildReactionEmojiIcon(
+            context,
+            emoji: '⁉️',
+            highlighted: highlighted,
+          ),
         ),
       ],
       galleryHeaderTheme: GalleryHeaderThemeData(

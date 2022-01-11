@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stream_chat_flutter/src/extension.dart';
 import 'package:stream_chat_flutter/src/reaction_bubble.dart';
@@ -70,7 +71,8 @@ class MessageReactionsModal extends StatelessWidget {
 
     final child = Center(
       child: SingleChildScrollView(
-        child: Padding(
+        child: Container(
+          width: kIsWeb ? roughMaxSize : null,
           padding: const EdgeInsets.all(8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
