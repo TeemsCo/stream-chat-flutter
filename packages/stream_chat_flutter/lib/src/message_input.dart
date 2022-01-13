@@ -492,7 +492,7 @@ class MessageInputState extends State<MessageInput> {
           ),
           if (widget.audioRecordWidget != null)
             Padding(
-              padding: const EdgeInsets.only(top: 4),
+              padding: const EdgeInsets.only(top: 5),
               child: widget.audioRecordWidget,
             ),
         ],
@@ -543,7 +543,7 @@ class MessageInputState extends State<MessageInput> {
               _buildExpandActionsButton(context),
             if (widget.sendButtonLocation == SendButtonLocation.outside)
               _animateSendButton(context),
-            if (widget.audioRecordWidget != null) const SizedBox(width: 36),
+            if (widget.audioRecordWidget != null) const SizedBox(width: 50),
           ],
         ),
       );
