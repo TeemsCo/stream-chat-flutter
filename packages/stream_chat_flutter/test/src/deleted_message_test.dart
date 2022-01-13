@@ -21,6 +21,7 @@ void main() {
           client: client,
           child: const Scaffold(
             body: DeletedMessage(
+              isMyMessage: true,
               messageTheme: MessageThemeData(
                 createdAtStyle: TextStyle(
                   color: Colors.black,
@@ -76,6 +77,7 @@ void main() {
               channel: channel,
               child: Center(
                 child: DeletedMessage(
+                  isMyMessage: true,
                   messageTheme: theme.ownMessageTheme,
                 ),
               ),
@@ -129,6 +131,7 @@ void main() {
               channel: channel,
               child: Center(
                 child: DeletedMessage(
+                  isMyMessage: true,
                   messageTheme: theme.ownMessageTheme,
                 ),
               ),
@@ -182,6 +185,7 @@ void main() {
               channel: channel,
               child: Center(
                 child: DeletedMessage(
+                  isMyMessage: true,
                   messageTheme: theme.ownMessageTheme,
                   reverse: true,
                   shape: RoundedRectangleBorder(

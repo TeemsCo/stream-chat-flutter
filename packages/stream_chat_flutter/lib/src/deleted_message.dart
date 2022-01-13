@@ -53,8 +53,8 @@ class DeletedMessage extends StatelessWidget {
           ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          vertical: 8,
           horizontal: 16,
+          vertical: 14,
         ),
         child: Text(
           context.translations.messageDeletedLabel,
