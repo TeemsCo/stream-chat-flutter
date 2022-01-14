@@ -2,18 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:stream_chat_flutter/src/extension.dart';
 import 'package:stream_chat_flutter/src/stream_chat_theme.dart';
 import 'package:stream_chat_flutter/src/theme/themes.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 /// Widget to display deleted message
 class DeletedMessage extends StatelessWidget {
   /// Constructor to create [DeletedMessage]
   const DeletedMessage({
     Key? key,
+    required this.isMyMessage,
     required this.messageTheme,
     this.borderRadiusGeometry,
     this.shape,
     this.borderSide,
     this.reverse = false,
   }) : super(key: key);
+
+  ///The deleted message
+  final bool isMyMessage;
 
   /// The theme of the message
   final MessageThemeData messageTheme;
@@ -33,8 +38,9 @@ class DeletedMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chatThemeData = StreamChatTheme.of(context);
+    print(isMyMessage);
     return Material(
-      color: messageTheme.messageBackgroundColor,
+      color: isMyMessage ? const Color(0xFF1774F2) : const Color(0xFFEEEEEE),
       shape: shape ??
           RoundedRectangleBorder(
             borderRadius: borderRadiusGeometry ?? BorderRadius.zero,
@@ -47,14 +53,14 @@ class DeletedMessage extends StatelessWidget {
           ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          vertical: 8,
           horizontal: 16,
+          vertical: 14,
         ),
         child: Text(
           context.translations.messageDeletedLabel,
-          style: messageTheme.messageTextStyle?.copyWith(
+          style: TextStyle(
+            color: isMyMessage ? Colors.white : Colors.black,
             fontStyle: FontStyle.italic,
-            color: messageTheme.createdAtStyle?.color,
           ),
         ),
       ),

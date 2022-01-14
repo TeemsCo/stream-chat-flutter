@@ -754,6 +754,9 @@ class _MessageWidgetState extends State<MessageWidget>
                                                             : 4.0,
                                                   ),
                                                   child: DeletedMessage(
+                                                    isMyMessage: _streamChat
+                                                            .currentUser?.id ==
+                                                        widget.message.user?.id,
                                                     borderRadiusGeometry: widget
                                                         .borderRadiusGeometry,
                                                     borderSide:
