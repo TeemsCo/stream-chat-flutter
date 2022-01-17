@@ -614,7 +614,6 @@ class _MessageListViewState extends State<MessageListView> {
                     final timeDiff =
                         Jiffy(nextMessage.createdAt.toLocal()).diff(
                       message.createdAt.toLocal(),
-                      Units.MINUTE,
                     );
 
                     final spacingRules = <SpacingType>[];
@@ -623,7 +622,7 @@ class _MessageListViewState extends State<MessageListView> {
                         message.user!.id == nextMessage.user?.id;
                     final isThread = message.replyCount! > 0;
                     final isDeleted = message.isDeleted;
-                    final hasTimeDiff = timeDiff >= 1;
+                    final hasTimeDiff = timeDiff >= 100;
 
                     if (hasTimeDiff) {
                       spacingRules.add(SpacingType.timeDiff);
@@ -1071,7 +1070,6 @@ class _MessageListViewState extends State<MessageListView> {
     if (nextMessage != null) {
       timeDiff = Jiffy(nextMessage.createdAt.toLocal()).diff(
         message.createdAt.toLocal(),
-        Units.MINUTE,
       );
     }
 
@@ -1087,21 +1085,21 @@ class _MessageListViewState extends State<MessageListView> {
 
     final showTimeStamp = (!isThreadMessage || _isThreadConversation) &&
         !hasReplies &&
-        (timeDiff >= 1 || !isNextUserSame);
+        (timeDiff >= 100 || !isNextUserSame);
 
     final showUserNameAtBottom = !isMyMessage &&
         (!isThreadMessage || _isThreadConversation) &&
         !hasReplies &&
-        (timeDiff >= 1 || !isNextUserSame);
+        (timeDiff >= 100 || !isNextUserSame);
 
     final showUserAvatar = isMyMessage
         ? DisplayWidget.gone
-        : (timeDiff >= 1 || !isNextUserSame)
+        : (timeDiff >= 100 || !isNextUserSame)
             ? DisplayWidget.show
             : DisplayWidget.hide;
 
     final showSendingIndicator =
-        isMyMessage && (index == 0 || timeDiff >= 1 || !isNextUserSame);
+        isMyMessage && (index == 0 || timeDiff >= 100 || !isNextUserSame);
 
     final showInChannelIndicator = !_isThreadConversation && isThreadMessage;
     final showThreadReplyIndicator = !_isThreadConversation && hasReplies;
@@ -1160,7 +1158,7 @@ class _MessageListViewState extends State<MessageListView> {
         bottomLeft: isMyMessage
             ? Radius.circular(attachmentBorderRadius)
             : Radius.circular(
-                (timeDiff >= 1 || !isNextUserSame) &&
+                (timeDiff >= 100 || !isNextUserSame) &&
                         !(hasReplies || isThreadMessage || hasFileAttachment)
                     ? 0
                     : attachmentBorderRadius,
@@ -1168,7 +1166,7 @@ class _MessageListViewState extends State<MessageListView> {
         topRight: Radius.circular(attachmentBorderRadius),
         bottomRight: isMyMessage
             ? Radius.circular(
-                (timeDiff >= 1 || !isNextUserSame) &&
+                (timeDiff >= 100 || !isNextUserSame) &&
                         !(hasReplies || isThreadMessage || hasFileAttachment)
                     ? 0
                     : attachmentBorderRadius,
@@ -1181,7 +1179,7 @@ class _MessageListViewState extends State<MessageListView> {
         bottomLeft: isMyMessage
             ? const Radius.circular(16)
             : Radius.circular(
-                (timeDiff >= 1 || !isNextUserSame) &&
+                (timeDiff >= 100 || !isNextUserSame) &&
                         !(hasReplies || isThreadMessage)
                     ? 0
                     : 16,
