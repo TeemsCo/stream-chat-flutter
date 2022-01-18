@@ -100,11 +100,9 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
   Widget build(BuildContext context) => _showMessageOptionsModal();
 
   Widget _showMessageOptionsModal() {
+    final isDesktop = MediaQuery.of(context).size.width >= 650;
     final mediaQueryData = MediaQuery.of(context);
-    final size = mediaQueryData.size;
-    final user = StreamChat.of(context).currentUser;
 
-    final roughMaxSize = size.width * 2 / 3;
     var messageTextLength = widget.message.text!.length;
     if (widget.message.quotedMessage != null) {
       var quotedMessageLength =
@@ -116,12 +114,6 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
         messageTextLength = quotedMessageLength;
       }
     }
-    final roughSentenceSize = messageTextLength *
-        (widget.messageTheme.messageTextStyle?.fontSize ?? 1) *
-        1.2;
-    final divFactor = widget.message.attachments.isNotEmpty
-        ? 1
-        : (roughSentenceSize == 0 ? 1 : (roughSentenceSize / roughMaxSize));
 
     final streamChatThemeData = StreamChatTheme.of(context);
 
@@ -138,20 +130,22 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
               ),
             ),
           const SizedBox(height: 8),
-          IgnorePointer(
-            child: widget.messageWidget,
-          ),
+          IgnorePointer(child: widget.messageWidget),
           const SizedBox(height: 8),
           SizedBox(
-            width: mediaQueryData.size.width,
+            width: isDesktop
+                ? mediaQueryData.size.width * 0.4
+                : mediaQueryData.size.width,
             child: Material(
               color: streamChatThemeData.colorTheme.appBg,
               clipBehavior: Clip.hardEdge,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(16),
-                  topLeft: Radius.circular(16),
-                ),
+              shape: RoundedRectangleBorder(
+                borderRadius: isDesktop
+                    ? const BorderRadius.all(Radius.circular(16))
+                    : const BorderRadius.only(
+                        topRight: Radius.circular(16),
+                        topLeft: Radius.circular(16),
+                      ),
               ),
               child: Padding(
                 padding: const EdgeInsets.only(left: 10),

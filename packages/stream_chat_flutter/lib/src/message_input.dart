@@ -1001,19 +1001,6 @@ class MessageInputState extends State<MessageInput> {
                                   });
                                 },
                     ),
-
-                    // IconButton(
-                    //   iconSize: 32,
-                    //   icon: StreamSvgIcon.files(
-                    //     color: _getIconColor(1),
-                    //   ),
-                    //   onPressed:
-                    //       !_attachmentContainsFile && _attachments.isNotEmpty
-                    //           ? null
-                    //           : () {
-                    //               pickFile(DefaultAttachmentTypes.file);
-                    //             },
-                    // ),
                     IconButton(
                       icon: const Icon(
                         Icons.camera_alt_outlined,
@@ -1030,22 +1017,6 @@ class MessageInputState extends State<MessageInput> {
                               );
                             },
                     ),
-                    // IconButton(
-                    //   padding: const EdgeInsets.all(0),
-                    //   icon: StreamSvgIcon.record(
-                    //     color: _getIconColor(3),
-                    //   ),
-                    //   onPressed: attachmentLimitCrossed ||
-                    //           (_attachmentContainsFile &&
-                    //               _attachments.isNotEmpty)
-                    //       ? null
-                    //       : () {
-                    //           pickFile(
-                    //             DefaultAttachmentTypes.video,
-                    //             camera: true,
-                    //           );
-                    //         },
-                    // ),
                   ],
                 ),
                 DecoratedBox(
@@ -1501,7 +1472,7 @@ class MessageInputState extends State<MessageInput> {
 
   /// Show the attachment modal, making the user choose where to
   /// pick a media from
-  void showAttachmentModal() {
+  void showAttachmentModal() async {
     if (_focusNode.hasFocus) {
       _focusNode.unfocus();
     }
@@ -1511,30 +1482,31 @@ class MessageInputState extends State<MessageInput> {
         _openFilePickerSection = true;
       });
     } else {
-      showModalBottomSheet(
-        clipBehavior: Clip.hardEdge,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(32),
-            topRight: Radius.circular(32),
-          ),
-        ),
+      showDialog(
         context: context,
-        isScrollControlled: true,
-        builder: (_) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            const SizedBox(height: 15),
-            ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
-              title: Text(context.translations.uploadAPhotoLabel),
-              onTap: () {
-                pickFile(DefaultAttachmentTypes.image);
-                Navigator.pop(context);
-              },
+        builder: (context) => Dialog(
+          clipBehavior: Clip.hardEdge,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(32)),
+          ),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.4,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const SizedBox(height: 15),
+                ListTile(
+                  leading: const Icon(Icons.photo_library_outlined),
+                  title: Text(context.translations.uploadAPhotoLabel),
+                  onTap: () {
+                    pickFile(DefaultAttachmentTypes.image);
+                    Navigator.pop(context);
+                  },
+                ),
+                const SizedBox(height: 25),
+              ],
             ),
-            const SizedBox(height: 25),
-          ],
+          ),
         ),
       );
     }
