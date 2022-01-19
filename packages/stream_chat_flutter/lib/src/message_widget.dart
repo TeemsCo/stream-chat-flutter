@@ -1107,74 +1107,89 @@ class _MessageWidgetState extends State<MessageWidget>
 
   void _showMessageActionModalBottomSheet(BuildContext context) {
     final channel = StreamChannel.of(context).channel;
+    final isDesktop = MediaQuery.of(context).size.width >= 650;
 
-    showModalBottomSheet(
-      // useRootNavigator: false
-      // shape: const RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.only(
-      //     topLeft: Radius.circular(20),
-      //     topRight: Radius.circular(20),
-      //   ),
-      // ),
-      backgroundColor: Colors.transparent,
-      context: context,
-      // barrierColor: _streamChatTheme.colorTheme.overlay,
-      builder: (context) => StreamChannel(
-        channel: channel,
-        child: MessageActionsModal(
-          messageWidget: const SizedBox(),
-          // messageWidget: widget.copyWith(
-          //   key: const Key('MessageWidget'),
-          //   message: widget.message.copyWith(
-          //     text: (widget.message.text?.length ?? 0) > 200
-          //         ? '${widget.message.text!.substring(0, 200)}...'
-          //         : widget.message.text,
-          //   ),
-          //   showReactions: false,
-          //   showUserNameAtBottom: false,
-          //   showTimestamp: false,
-          //   translateUserAvatar: false,
-          //   showSendingIndicator: false,
-          //   padding: const EdgeInsets.all(0),
-          //   showReactionPickerIndicator: widget.showReactions &&
-          //       (widget.message.status == MessageSendingStatus.sent),
-          //   showPinHighlight: false,
-          //   showUserAvatar:
-          //       widget.message.user!.id == channel.client.state.currentUser!.id
-          //           ? DisplayWidget.gone
-          //           : DisplayWidget.show,
-          // ),
-          onCopyTap: (message) =>
-              Clipboard.setData(ClipboardData(text: message.text)),
-          messageTheme: widget.messageTheme,
-          reverse: widget.reverse,
-          showDeleteMessage: widget.showDeleteMessage || isDeleteFailed,
-          message: widget.message,
-          editMessageInputBuilder: widget.editMessageInputBuilder,
-          onReplyTap: widget.onReplyTap,
-          onThreadReplyTap: widget.onThreadTap,
-          showResendMessage:
-              widget.showResendMessage && (isSendFailed || isUpdateFailed),
-          showCopyMessage: widget.showCopyMessage &&
-              !isFailedState &&
-              widget.message.text?.trim().isNotEmpty == true,
-          showEditMessage: widget.showEditMessage &&
-              !isDeleteFailed &&
-              !widget.message.attachments
-                  .any((element) => element.type == 'giphy'),
-          showReactions: widget.showReactions,
-          showReplyMessage: widget.showReplyMessage &&
-              !isFailedState &&
-              widget.onReplyTap != null,
-          showThreadReplyMessage: widget.showThreadReplyMessage &&
-              !isFailedState &&
-              widget.onThreadTap != null,
-          showFlagButton: widget.showFlagButton,
-          showPinButton: widget.showPinButton,
-          customActions: widget.customActions,
+    if (isDesktop) {
+      showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          backgroundColor: Colors.transparent,
+          child: StreamChannel(
+            channel: channel,
+            child: MessageActionsModal(
+              messageWidget: const SizedBox(),
+              onCopyTap: (message) =>
+                  Clipboard.setData(ClipboardData(text: message.text)),
+              messageTheme: widget.messageTheme,
+              reverse: widget.reverse,
+              showDeleteMessage: widget.showDeleteMessage || isDeleteFailed,
+              message: widget.message,
+              editMessageInputBuilder: widget.editMessageInputBuilder,
+              onReplyTap: widget.onReplyTap,
+              onThreadReplyTap: widget.onThreadTap,
+              showResendMessage:
+                  widget.showResendMessage && (isSendFailed || isUpdateFailed),
+              showCopyMessage: widget.showCopyMessage &&
+                  !isFailedState &&
+                  widget.message.text?.trim().isNotEmpty == true,
+              showEditMessage: widget.showEditMessage &&
+                  !isDeleteFailed &&
+                  !widget.message.attachments
+                      .any((element) => element.type == 'giphy'),
+              showReactions: widget.showReactions,
+              showReplyMessage: widget.showReplyMessage &&
+                  !isFailedState &&
+                  widget.onReplyTap != null,
+              showThreadReplyMessage: widget.showThreadReplyMessage &&
+                  !isFailedState &&
+                  widget.onThreadTap != null,
+              showFlagButton: widget.showFlagButton,
+              showPinButton: widget.showPinButton,
+              customActions: widget.customActions,
+            ),
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (context) => StreamChannel(
+          channel: channel,
+          child: MessageActionsModal(
+            messageWidget: const SizedBox(),
+            onCopyTap: (message) =>
+                Clipboard.setData(ClipboardData(text: message.text)),
+            messageTheme: widget.messageTheme,
+            reverse: widget.reverse,
+            showDeleteMessage: widget.showDeleteMessage || isDeleteFailed,
+            message: widget.message,
+            editMessageInputBuilder: widget.editMessageInputBuilder,
+            onReplyTap: widget.onReplyTap,
+            onThreadReplyTap: widget.onThreadTap,
+            showResendMessage:
+                widget.showResendMessage && (isSendFailed || isUpdateFailed),
+            showCopyMessage: widget.showCopyMessage &&
+                !isFailedState &&
+                widget.message.text?.trim().isNotEmpty == true,
+            showEditMessage: widget.showEditMessage &&
+                !isDeleteFailed &&
+                !widget.message.attachments
+                    .any((element) => element.type == 'giphy'),
+            showReactions: widget.showReactions,
+            showReplyMessage: widget.showReplyMessage &&
+                !isFailedState &&
+                widget.onReplyTap != null,
+            showThreadReplyMessage: widget.showThreadReplyMessage &&
+                !isFailedState &&
+                widget.onThreadTap != null,
+            showFlagButton: widget.showFlagButton,
+            showPinButton: widget.showPinButton,
+            customActions: widget.customActions,
+          ),
+        ),
+      );
+    }
   }
 
   void _showMessageReactionsModalBottomSheet(BuildContext context) {
