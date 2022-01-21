@@ -1222,6 +1222,7 @@ class _MessageWidgetState extends State<MessageWidget>
                     ? DisplayWidget.gone
                     : DisplayWidget.show,
           ),
+          userAvatarBuilder: widget.userAvatarBuilder,
           onUserAvatarTap: widget.onUserAvatarTap,
           messageTheme: widget.messageTheme,
           reverse: widget.reverse,

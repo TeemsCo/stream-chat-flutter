@@ -22,6 +22,7 @@ class MessageReactionsModal extends StatelessWidget {
     this.showReactions = true,
     this.reverse = false,
     this.onUserAvatarTap,
+    this.userAvatarBuilder,
   }) : super(key: key);
 
   /// Widget that shows the message
@@ -41,6 +42,9 @@ class MessageReactionsModal extends StatelessWidget {
 
   /// Callback when user avatar is tapped
   final void Function(User)? onUserAvatarTap;
+
+  /// Widget to build instead of the default UserAvatar
+  final Widget Function(BuildContext, User)? userAvatarBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -203,19 +207,25 @@ class MessageReactionsModal extends StatelessWidget {
           Stack(
             clipBehavior: Clip.none,
             children: [
-              UserAvatar(
-                onTap: onUserAvatarTap,
-                user: reaction.user!,
-                constraints: const BoxConstraints.tightFor(
-                  height: 64,
-                  width: 64,
+              if (userAvatarBuilder != null)
+                userAvatarBuilder!(
+                  context,
+                  reaction.user!,
+                )
+              else
+                UserAvatar(
+                  onTap: onUserAvatarTap,
+                  user: reaction.user!,
+                  constraints: const BoxConstraints.tightFor(
+                    height: 64,
+                    width: 64,
+                  ),
+                  onlineIndicatorConstraints: const BoxConstraints.tightFor(
+                    height: 12,
+                    width: 12,
+                  ),
+                  borderRadius: BorderRadius.circular(32),
                 ),
-                onlineIndicatorConstraints: const BoxConstraints.tightFor(
-                  height: 12,
-                  width: 12,
-                ),
-                borderRadius: BorderRadius.circular(32),
-              ),
               Positioned(
                 bottom: 6,
                 left: isCurrentUser ? -3 : null,
