@@ -1527,6 +1527,13 @@ class ChannelClientState {
           ...channelState.members,
           member!,
         ],
+        read: channelState.read
+          ..add(
+            Read(
+              lastRead: DateTime(0),
+              user: member.user!,
+            ),
+          ),
       ));
     }));
   }
