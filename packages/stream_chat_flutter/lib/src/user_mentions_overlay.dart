@@ -93,18 +93,21 @@ class _UserMentionsOverlayState extends State<UserMentionsOverlay> {
   @override
   Widget build(BuildContext context) {
     final theme = StreamChatTheme.of(context);
+    final isDesktop = MediaQuery.of(context).size.width >= 650;
+    final width =
+        isDesktop ? widget.size.width : MediaQuery.of(context).size.width;
 
     return Stack(
       children: [
         Container(
-          color: Colors.black.withOpacity(0.6),
-          width: MediaQuery.of(context).size.width,
+          color: isDesktop ? Colors.transparent : Colors.black.withOpacity(0.6),
+          width: width,
           height: MediaQuery.of(context).size.height,
         ),
         Positioned(
           bottom: 0,
           child: Container(
-            width: MediaQuery.of(context).size.width,
+            width: width,
             decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
@@ -114,7 +117,7 @@ class _UserMentionsOverlayState extends State<UserMentionsOverlay> {
             ),
             clipBehavior: Clip.hardEdge,
             child: Container(
-              width: MediaQuery.of(context).size.width,
+              width: width,
               constraints: BoxConstraints.loose(widget.size),
               decoration: BoxDecoration(color: theme.colorTheme.barsBg),
               child: FutureBuilder<List<User>>(
@@ -135,7 +138,9 @@ class _UserMentionsOverlayState extends State<UserMentionsOverlay> {
                     itemBuilder: (context, index) {
                       final user = users[index];
                       return Material(
-                        color: theme.colorTheme.barsBg,
+                        color: isDesktop
+                            ? Colors.grey[50]
+                            : theme.colorTheme.barsBg,
                         child: InkWell(
                           onTap: () => widget.onMentionUserTap?.call(user),
                           child:
