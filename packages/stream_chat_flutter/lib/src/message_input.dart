@@ -1127,6 +1127,7 @@ class MessageInputState extends State<MessageInput> {
   }
 
   Widget _buildMentionsOverlayEntry() {
+    final isDesktop = MediaQuery.of(context).size.width >= 650;
     final channel = StreamChannel.of(context).channel;
     if (textEditingController.value.selection.start < 0 ||
         channel.state == null) {
@@ -1160,7 +1161,10 @@ class MessageInputState extends State<MessageInput> {
       mentionAllAppUsers: widget.mentionAllAppUsers,
       client: StreamChat.of(context).client,
       channel: channel,
-      size: Size(renderObject.size.width - 16, 400),
+      size: Size(
+        renderObject.size.width - (isDesktop ? 0 : 16),
+        400,
+      ),
       mentionsTileBuilder: tileBuilder,
       onMentionUserTap: (user) {
         _mentionedUsers.add(user);
