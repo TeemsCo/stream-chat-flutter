@@ -7,8 +7,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:stream_chat_flutter/src/commands_overlay.dart';
@@ -1079,11 +1081,11 @@ class MessageInputState extends State<MessageInput> {
     );
 
     if (mediaFile == null) return;
-
+    final fileAsBytes = mediaFile.readAsBytesSync();
     var file = AttachmentFile(
       path: mediaFile.path,
       size: await mediaFile.length(),
-      bytes: mediaFile.readAsBytesSync(),
+      bytes: fileAsBytes,
     );
 
     if (file.size! > widget.maxAttachmentSize) {
@@ -1116,12 +1118,53 @@ class MessageInputState extends State<MessageInput> {
       }
     }
 
-    setState(() {
-      final attachment = Attachment(
+    final isImage = medium.type == AssetType.image;
+    Attachment attachment;
+
+    if (isImage) {
+      try {
+        final dir = await getTemporaryDirectory();
+        final targetName = mediaFile.absolute.path.split('/').last;
+        final target = '${dir.absolute.path}/$targetName';
+
+        final compressedFile = await FlutterImageCompress.compressAndGetFile(
+          mediaFile.absolute.path,
+          target,
+          quality: 30,
+        );
+
+        if (compressedFile == null) {
+          _showErrorAlert(context.translations.genericErrorText);
+          return;
+        }
+
+        final compressedFileBytes = await compressedFile.readAsBytes();
+
+        final file = AttachmentFile(
+          name: compressedFile.uri.toString(),
+          path: compressedFile.path,
+          size: compressedFileBytes.length,
+          bytes: compressedFileBytes,
+        );
+
+        attachment = Attachment(
+          type: 'image',
+          id: medium.id,
+          file: file,
+        );
+      } catch (e) {
+        _showErrorAlert(context.translations.genericErrorText);
+        return;
+      }
+    } else {
+      attachment = Attachment(
         id: medium.id,
         file: file,
-        type: medium.type == AssetType.image ? 'image' : 'video',
+        type: 'video',
       );
+    }
+
+    setState(() {
       _addAttachments([attachment]);
     });
   }
@@ -1567,7 +1610,10 @@ class MessageInputState extends State<MessageInput> {
     if (camera) {
       XFile? pickedFile;
       if (fileType == DefaultAttachmentTypes.image) {
-        pickedFile = await _imagePicker.pickImage(source: ImageSource.camera);
+        pickedFile = await _imagePicker.pickImage(
+          source: ImageSource.camera,
+          imageQuality: 30,
+        );
       } else if (fileType == DefaultAttachmentTypes.video) {
         pickedFile = await _imagePicker.pickVideo(source: ImageSource.camera);
       }
