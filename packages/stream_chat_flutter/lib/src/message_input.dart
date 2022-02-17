@@ -78,6 +78,7 @@ typedef UserMentionTileBuilder = Widget Function(
 typedef ActionButtonBuilder = Widget Function(
   BuildContext context,
   IconButton defaultActionButton,
+  bool isPickerOpen,
 );
 
 /// Location for actions on the [MessageInput]
@@ -490,7 +491,9 @@ class MessageInputState extends State<MessageInput> {
             elevation: 8,
             child: child,
           ),
-          if (widget.audioRecordWidget != null)
+          if (widget.audioRecordWidget != null &&
+              _attachments.isEmpty &&
+              !_openFilePickerSection)
             Padding(
               padding: const EdgeInsets.only(top: 5),
               child: widget.audioRecordWidget,
@@ -543,7 +546,10 @@ class MessageInputState extends State<MessageInput> {
               _buildExpandActionsButton(context),
             if (widget.sendButtonLocation == SendButtonLocation.outside)
               _animateSendButton(context),
-            if (widget.audioRecordWidget != null) const SizedBox(width: 50),
+            if (widget.audioRecordWidget != null &&
+                _attachments.isEmpty &&
+                !_openFilePickerSection)
+              const SizedBox(width: 50),
           ],
         ),
       );
@@ -1441,11 +1447,16 @@ class MessageInputState extends State<MessageInput> {
       },
     );
 
-    return widget.commandButtonBuilder?.call(context, defaultButton) ??
+    return widget.commandButtonBuilder?.call(
+          context,
+          defaultButton,
+          _openFilePickerSection,
+        ) ??
         defaultButton;
   }
 
   Widget _buildAttachmentButton(BuildContext context) {
+    final degreesToRotate = _openFilePickerSection ? (90 / 360) : 0.0;
     final defaultButton = IconButton(
       icon: StreamSvgIcon.attach(
         color: _openFilePickerSection
@@ -1470,8 +1481,20 @@ class MessageInputState extends State<MessageInput> {
       },
     );
 
-    return widget.attachmentButtonBuilder?.call(context, defaultButton) ??
-        defaultButton;
+    return RotationTransition(
+      turns: AlwaysStoppedAnimation(degreesToRotate),
+      child: defaultButton.copyWith(
+        onPressed: () {
+          defaultButton.onPressed!.call();
+        },
+        icon: widget.attachmentButtonBuilder?.call(
+              context,
+              defaultButton,
+              _openFilePickerSection,
+            ) ??
+            defaultButton.icon,
+      ),
+    );
   }
 
   /// Show the attachment modal, making the user choose where to
