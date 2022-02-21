@@ -22,6 +22,7 @@ class UserMentionsOverlay extends StatefulWidget {
     required this.query,
     required this.channel,
     required this.size,
+    required this.closeOverlay,
     this.client,
     this.limit = 10,
     this.mentionAllAppUsers = false,
@@ -48,6 +49,9 @@ class UserMentionsOverlay extends StatefulWidget {
 
   /// The size of the overlay.
   final Size size;
+
+  /// Method to close the current overlay
+  final Function closeOverlay;
 
   /// The channel to search for users.
   final Channel channel;
@@ -99,10 +103,14 @@ class _UserMentionsOverlayState extends State<UserMentionsOverlay> {
 
     return Stack(
       children: [
-        Container(
-          color: isDesktop ? Colors.transparent : Colors.black.withOpacity(0.6),
-          width: width,
-          height: MediaQuery.of(context).size.height,
+        GestureDetector(
+          onTap: () => widget.closeOverlay(),
+          child: Container(
+            color:
+                isDesktop ? Colors.transparent : Colors.black.withOpacity(0.6),
+            width: width,
+            height: MediaQuery.of(context).size.height,
+          ),
         ),
         Positioned(
           bottom: 0,
