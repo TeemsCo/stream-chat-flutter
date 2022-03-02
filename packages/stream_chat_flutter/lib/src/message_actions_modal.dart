@@ -33,6 +33,10 @@ class MessageActionsModal extends StatefulWidget {
     this.reverse = false,
     this.customActions = const [],
     this.onCopyTap,
+    this.closePortal,
+    this.copyLabel,
+    this.deleteLabel,
+    this.editLabel,
   }) : super(key: key);
 
   /// Widget that shows the message
@@ -89,15 +93,38 @@ class MessageActionsModal extends StatefulWidget {
   /// List of custom actions
   final List<MessageAction> customActions;
 
+  /// Void function that closes the widget. It should be provided only
+  /// when this widget is used in a portal
+  final void Function()? closePortal;
+
+  /// Custom label for the copy action button
+  final String? copyLabel;
+
+  /// Custom label for the edit action button
+  final String? editLabel;
+
+  /// Custom label for the delete action button
+  final String? deleteLabel;
+
   @override
   _MessageActionsModalState createState() => _MessageActionsModalState();
 }
 
 class _MessageActionsModalState extends State<MessageActionsModal> {
+  bool get showActionsState => _showActions;
+
   bool _showActions = true;
 
   @override
   Widget build(BuildContext context) => _showMessageOptionsModal();
+
+  void closeActionMenu() {
+    if (widget.closePortal != null) {
+      widget.closePortal!();
+    } else {
+      Navigator.pop(context);
+    }
+  }
 
   Widget _showMessageOptionsModal() {
     final isDesktop = MediaQuery.of(context).size.width >= 650;
@@ -130,13 +157,16 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
               ),
             ),
           const SizedBox(height: 8),
-          IgnorePointer(child: widget.messageWidget),
+          if (!isDesktop) IgnorePointer(child: widget.messageWidget),
           const SizedBox(height: 8),
           SizedBox(
             width: isDesktop
-                ? mediaQueryData.size.width * 0.4
+                ? mediaQueryData.size.width * 0.2
                 : mediaQueryData.size.width,
             child: Material(
+              elevation: isDesktop ? 8 : 0,
+              shadowColor:
+                  isDesktop ? const Color.fromRGBO(0, 0, 0, 0.7) : null,
               color: streamChatThemeData.colorTheme.appBg,
               clipBehavior: Clip.hardEdge,
               shape: RoundedRectangleBorder(
@@ -147,12 +177,12 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
                         topLeft: Radius.circular(16),
                       ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 10),
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: isDesktop ? 6 : 16),
+                margin: EdgeInsets.only(left: isDesktop ? 0 : 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: 20),
                     if (widget.showReplyMessage &&
                         widget.message.status == MessageSendingStatus.sent)
                       _buildReplyButton(context),
@@ -172,10 +202,7 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
                     ),
                     if (widget.showFlagButton) _buildFlagButton(context),
                     if (widget.showPinButton) _buildPinButton(context),
-                    const SizedBox(height: 20),
-                  ].insertBetween(
-                    const SizedBox(height: 10),
-                  ),
+                  ].insertBetween(const SizedBox(height: 10)),
                 ),
               ),
             ),
@@ -275,7 +302,8 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
   void _togglePin() async {
     final channel = StreamChannel.of(context).channel;
 
-    Navigator.pop(context);
+    closeActionMenu();
+
     try {
       if (!widget.message.pinned) {
         await channel.pinMessage(widget.message);
@@ -334,7 +362,7 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
     final streamChatThemeData = StreamChatTheme.of(context);
     return InkWell(
       onTap: () {
-        Navigator.pop(context);
+        closeActionMenu();
         if (widget.onReplyTap != null) {
           widget.onReplyTap!(widget.message);
         }
@@ -408,7 +436,15 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
     final isDeleteFailed =
         widget.message.status == MessageSendingStatus.failed_delete;
     return InkWell(
-      onTap: _showDeleteDialog,
+      onTap: () async {
+        try {
+          await StreamChannel.of(context).channel.deleteMessage(widget.message);
+          closeActionMenu();
+        } catch (err) {
+          _showErrorAlert();
+        }
+      },
+      // onTap: _showDeleteDialog,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 16),
         child: Row(
@@ -416,9 +452,11 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
             const Icon(Icons.delete_outlined, color: Color(0xFF666666)),
             const SizedBox(width: 16),
             Text(
-              context.translations.toggleDeleteRetryDeleteMessageText(
-                isDeleteFailed: isDeleteFailed,
-              ),
+              widget.deleteLabel != null
+                  ? widget.deleteLabel!
+                  : context.translations.toggleDeleteRetryDeleteMessageText(
+                      isDeleteFailed: isDeleteFailed,
+                    ),
               style: StreamChatTheme.of(context).textTheme.body,
             ),
           ],
@@ -432,7 +470,8 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
     return InkWell(
       onTap: () async {
         widget.onCopyTap?.call(widget.message);
-        Navigator.pop(context);
+
+        closeActionMenu();
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 16),
@@ -441,7 +480,9 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
             const Icon(Icons.copy_all_outlined, color: Color(0xFF666666)),
             const SizedBox(width: 16),
             Text(
-              context.translations.copyMessageLabel,
+              widget.copyLabel != null
+                  ? widget.copyLabel!
+                  : context.translations.copyMessageLabel,
               style: streamChatThemeData.textTheme.body,
             ),
           ],
@@ -454,7 +495,8 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
     final streamChatThemeData = StreamChatTheme.of(context);
     return InkWell(
       onTap: () async {
-        Navigator.pop(context);
+        closeActionMenu();
+
         _showEditBottomSheet(context);
       },
       child: Padding(
@@ -464,7 +506,9 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
             const Icon(Icons.edit_outlined, color: Color(0xFF666666)),
             const SizedBox(width: 16),
             Text(
-              context.translations.editMessageLabel,
+              widget.editLabel != null
+                  ? widget.editLabel!
+                  : context.translations.editMessageLabel,
               style: streamChatThemeData.textTheme.body,
             ),
           ],
@@ -479,7 +523,8 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
     final streamChatThemeData = StreamChatTheme.of(context);
     return InkWell(
       onTap: () {
-        Navigator.pop(context);
+        closeActionMenu();
+
         final channel = StreamChannel.of(context).channel;
         if (isUpdateFailed) {
           channel.updateMessage(widget.message);
@@ -576,7 +621,8 @@ class _MessageActionsModalState extends State<MessageActionsModal> {
     final streamChatThemeData = StreamChatTheme.of(context);
     return InkWell(
       onTap: () {
-        Navigator.pop(context);
+        closeActionMenu();
+
         if (widget.onThreadReplyTap != null) {
           widget.onThreadReplyTap!(widget.message);
         }

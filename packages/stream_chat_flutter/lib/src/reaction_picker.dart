@@ -15,10 +15,23 @@ class ReactionPicker extends StatefulWidget {
   const ReactionPicker({
     Key? key,
     required this.message,
+    this.closePortal,
+    this.shouldPop = true,
+    this.showShadow = false,
   }) : super(key: key);
 
   /// Message to attach the reaction to
   final Message message;
+
+  /// Void function that closes the widget. It should be provided only
+  /// when this widget is used in a portal
+  final VoidCallback? closePortal;
+
+  /// If the widget should display its shadow
+  final bool showShadow;
+
+  /// Indicates if it should pop after picking a reaction
+  final bool shouldPop;
 
   @override
   _ReactionPickerState createState() => _ReactionPickerState();
@@ -51,6 +64,8 @@ class _ReactionPickerState extends State<ReactionPicker>
       borderRadius: BorderRadius.circular(16),
       color: chatThemeData.colorTheme.barsBg,
       clipBehavior: Clip.hardEdge,
+      elevation: widget.showShadow ? 8 : 0,
+      shadowColor: const Color.fromRGBO(0, 0, 0, 0.7),
       child: Container(
         height: 56,
         padding: const EdgeInsets.symmetric(
@@ -90,6 +105,9 @@ class _ReactionPickerState extends State<ReactionPicker>
                       width: 24,
                     ),
                     onPressed: () {
+                      if (widget.closePortal != null) {
+                        widget.closePortal!();
+                      }
                       if (ownReactionIndex != -1) {
                         removeReaction(
                           context,
@@ -144,7 +162,9 @@ class _ReactionPickerState extends State<ReactionPicker>
     for (final a in animations) {
       a.stop();
     }
-    Navigator.of(context).pop();
+    if (widget.shouldPop) {
+      Navigator.of(context).pop();
+    }
   }
 
   /// Add a reaction to the message

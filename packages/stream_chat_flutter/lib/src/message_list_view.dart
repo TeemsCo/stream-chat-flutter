@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:stream_chat_flutter/scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:stream_chat_flutter/src/extension.dart';
@@ -26,6 +27,9 @@ typedef MessageBuilder = Widget Function(
   MessageDetails,
   List<Message>,
   MessageWidget defaultMessageWidget,
+  Widget Function(void Function()) buildEmojiOverlay,
+  Widget Function(void Function(), String?, String?, String?)
+      buildActionsMenuOverlay,
 );
 
 /// Widget builder for parent message
@@ -1232,6 +1236,40 @@ class _MessageListViewState extends State<MessageListView> {
         ),
         messages,
         messageWidget as MessageWidget,
+        (closePortal) => ReactionPicker(
+          message: message,
+          closePortal: () => closePortal(),
+          shouldPop: false,
+          showShadow: true,
+        ),
+        (
+          closePortal,
+          copyLabel,
+          deleteLabel,
+          editLabel,
+        ) =>
+            MessageActionsModal(
+          message: message,
+          messageWidget: messageWidget,
+          messageTheme: isMyMessage
+              ? _streamTheme.ownMessageTheme
+              : _streamTheme.otherMessageTheme,
+          closePortal: closePortal,
+          showReactions: false,
+          showFlagButton: false,
+          showPinButton: false,
+          showReplyMessage: false,
+          showResendMessage: false,
+          showThreadReplyMessage: false,
+          showDeleteMessage: isMyMessage,
+          showEditMessage: isMyMessage,
+          copyLabel: copyLabel,
+          deleteLabel: deleteLabel,
+          editLabel: editLabel,
+          onCopyTap: (message) {
+            Clipboard.setData(ClipboardData(text: message.text));
+          },
+        ),
       );
     }
 
