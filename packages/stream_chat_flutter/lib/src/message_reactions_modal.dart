@@ -4,12 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stream_chat_flutter/src/extension.dart';
 import 'package:stream_chat_flutter/src/reaction_bubble.dart';
-import 'package:stream_chat_flutter/src/reaction_picker.dart';
-import 'package:stream_chat_flutter/src/stream_chat.dart';
-import 'package:stream_chat_flutter/src/theme/themes.dart';
-import 'package:stream_chat_flutter/src/user_avatar.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
-import 'package:stream_chat_flutter_core/stream_chat_flutter_core.dart';
 
 /// Modal widget for displaying message reactions
 class MessageReactionsModal extends StatelessWidget {
