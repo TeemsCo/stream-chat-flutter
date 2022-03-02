@@ -1201,15 +1201,13 @@ class MessageInputState extends State<MessageInput> {
     }
 
     return UserMentionsOverlay(
+      closeOverlay: () => setState(() => _showMentionsOverlay = false),
       controller: textEditingController,
       query: query,
       mentionAllAppUsers: widget.mentionAllAppUsers,
       client: StreamChat.of(context).client,
       channel: channel,
-      size: Size(
-        renderObject.size.width - (isDesktop ? 0 : 16),
-        400,
-      ),
+      size: Size(renderObject.size.width, 400),
       mentionsTileBuilder: tileBuilder,
       onMentionUserTap: (user) {
         _mentionedUsers.add(user);
