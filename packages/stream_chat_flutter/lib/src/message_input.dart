@@ -1172,7 +1172,6 @@ class MessageInputState extends State<MessageInput> {
   }
 
   Widget _buildMentionsOverlayEntry() {
-    final isDesktop = MediaQuery.of(context).size.width >= 650;
     final channel = StreamChannel.of(context).channel;
     if (textEditingController.value.selection.start < 0 ||
         channel.state == null) {
