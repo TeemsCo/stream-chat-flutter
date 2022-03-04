@@ -697,7 +697,7 @@ class _MessageWidgetState extends State<MessageWidget>
                                               transform:
                                                   Matrix4.translationValues(
                                                 widget.reverse ? 12 : -12,
-                                                0,
+                                                isMyMessage ? 5 : 24,
                                                 0,
                                               ),
                                               constraints: const BoxConstraints(
@@ -721,15 +721,8 @@ class _MessageWidgetState extends State<MessageWidget>
                                         children: [
                                           Padding(
                                             padding: widget.showReactions
-                                                ? EdgeInsets.only(
-                                                    top: widget
-                                                                    .message
-                                                                    .reactionCounts
-                                                                    ?.isNotEmpty ==
-                                                                true &&
-                                                            isMyMessage
-                                                        ? 24
-                                                        : 0,
+                                                ? const EdgeInsets.only(
+                                                    top: 24,
                                                   )
                                                 : EdgeInsets.zero,
                                             child: Column(
@@ -1378,7 +1371,7 @@ class _MessageWidgetState extends State<MessageWidget>
           widget.translateUserAvatar
               ? (widget.messageTheme.avatarTheme?.constraints.maxHeight ?? 40) /
                   2
-              : 0,
+              : 25,
         ),
         child: widget.userAvatarBuilder?.call(context, widget.message.user!) ??
             UserAvatar(
