@@ -26,7 +26,7 @@ typedef MessageBuilder = Widget Function(
   BuildContext,
   MessageDetails,
   List<Message>,
-  MessageWidget defaultMessageWidget,
+  MessageWidget Function(double maxWidth) defaultMessageWidget,
   Widget Function(void Function()) buildEmojiOverlay,
   Widget Function(void Function(), String?, String?, String?)
       buildActionsMenuOverlay,
@@ -1235,7 +1235,9 @@ class _MessageListViewState extends State<MessageListView> {
           index,
         ),
         messages,
-        messageWidget as MessageWidget,
+        (maxWidth) => (messageWidget as MessageWidget).copyWith(
+          maxWidth: maxWidth,
+        ),
         (closePortal) => ReactionPicker(
           message: message,
           closePortal: () => closePortal(),
