@@ -13,7 +13,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:stream_chat_flutter/src/commands_overlay.dart';
-import 'package:stream_chat_flutter/src/custom_text_controller.dart';
 import 'package:stream_chat_flutter/src/emoji/emoji.dart';
 import 'package:stream_chat_flutter/src/emoji_overlay.dart';
 import 'package:stream_chat_flutter/src/extension.dart';
@@ -387,6 +386,10 @@ class MessageInputState extends State<MessageInput> {
   void _focusNodeListener() {
     if (_focusNode.hasFocus) {
       _openFilePickerSection = false;
+    } else {
+      setState(() {
+        _showMentionsOverlay = false;
+      });
     }
   }
 
