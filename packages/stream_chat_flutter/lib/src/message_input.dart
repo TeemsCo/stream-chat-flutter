@@ -16,6 +16,7 @@ import 'package:stream_chat_flutter/src/commands_overlay.dart';
 import 'package:stream_chat_flutter/src/emoji/emoji.dart';
 import 'package:stream_chat_flutter/src/emoji_overlay.dart';
 import 'package:stream_chat_flutter/src/extension.dart';
+import 'package:stream_chat_flutter/src/keys_handler.dart';
 import 'package:stream_chat_flutter/src/media_list_view.dart';
 import 'package:stream_chat_flutter/src/multi_overlay.dart';
 import 'package:stream_chat_flutter/src/quoted_message_widget.dart';
@@ -204,6 +205,8 @@ class MessageInput extends StatefulWidget {
     this.customOverlays = const [],
     this.mentionAllAppUsers = false,
     this.shouldKeepFocusAfterMessage,
+    this.onNewLineAction,
+    this.onEnterAction,
   })  : assert(
           initialMessage == null || editMessage == null,
           "Can't provide both `initialMessage` and `editMessage`",
@@ -328,6 +331,12 @@ class MessageInput extends StatefulWidget {
   /// Defines if the [MessageInput] loses focuses after a message is sent.
   /// The default behaviour keeps focus until a command is enabled.
   final bool? shouldKeepFocusAfterMessage;
+
+  /// Method to handle new line keypress on desktop platforms
+  final void Function(Intent)? onNewLineAction;
+
+  /// Method to handle enter keypress on desktop platforms
+  final void Function(Intent, List<String>)? onEnterAction;
 
   @override
   MessageInputState createState() => MessageInputState();
@@ -468,7 +477,11 @@ class MessageInputState extends State<MessageInput> {
                     ],
                   ),
                 ),
-              _buildTextField(context),
+              _buildTextField(
+                context,
+                widget.onNewLineAction,
+                widget.onEnterAction,
+              ),
               if (widget.parentMessage != null && !widget.hideSendAsDm)
                 Padding(
                   padding: const EdgeInsets.only(
@@ -532,7 +545,12 @@ class MessageInputState extends State<MessageInput> {
     );
   }
 
-  Widget _buildTextField(BuildContext context) => Padding(
+  Widget _buildTextField(
+    BuildContext context,
+    Function(Intent)? onNewLineAction,
+    Function(Intent, List<String>)? onEnterAction,
+  ) =>
+      Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Flex(
           direction: Axis.horizontal,
@@ -540,7 +558,11 @@ class MessageInputState extends State<MessageInput> {
             if (!_commandEnabled &&
                 widget.actionsLocation == ActionsLocation.left)
               _buildExpandActionsButton(context),
-            _buildTextInput(context),
+            _buildTextInput(
+              context,
+              onNewLineAction,
+              onEnterAction,
+            ),
             if (!_commandEnabled &&
                 widget.actionsLocation == ActionsLocation.right)
               _buildExpandActionsButton(context),
@@ -696,13 +718,35 @@ class MessageInputState extends State<MessageInput> {
     );
   }
 
-  Expanded _buildTextInput(BuildContext context) {
+  Expanded _buildTextInput(
+    BuildContext context,
+    void Function(Intent)? onNewLineAction,
+    void Function(Intent, List<String>)? onEnterAction,
+  ) {
     final margin = (widget.sendButtonLocation == SendButtonLocation.inside
             ? const EdgeInsets.only(right: 8)
             : EdgeInsets.zero) +
         (widget.actionsLocation != ActionsLocation.left || _commandEnabled
             ? const EdgeInsets.only(left: 8)
             : EdgeInsets.zero);
+
+    final textField = TextField(
+      key: const Key('messageInputText'),
+      enabled: _inputEnabled,
+      maxLines: null,
+      onSubmitted: (_) => sendMessage(),
+      keyboardType: widget.keyboardType,
+      controller: textEditingController,
+      focusNode: _focusNode,
+      style: _messageInputTheme.inputTextStyle,
+      autofocus: widget.autofocus,
+      textAlignVertical: TextAlignVertical.center,
+      decoration: _getInputDecoration(context),
+      textCapitalization: TextCapitalization.sentences,
+    );
+
+    final mentionedUsersIds = _mentionedUsers.map((user) => user.id).toList();
+
     return Expanded(
       child: Container(
         clipBehavior: Clip.hardEdge,
@@ -728,20 +772,18 @@ class MessageInputState extends State<MessageInput> {
                 _buildAttachments(),
                 LimitedBox(
                   maxHeight: widget.maxHeight,
-                  child: TextField(
-                    key: const Key('messageInputText'),
-                    enabled: _inputEnabled,
-                    maxLines: null,
-                    onSubmitted: (_) => sendMessage(),
-                    keyboardType: widget.keyboardType,
-                    controller: textEditingController,
-                    focusNode: _focusNode,
-                    style: _messageInputTheme.inputTextStyle,
-                    autofocus: widget.autofocus,
-                    textAlignVertical: TextAlignVertical.center,
-                    decoration: _getInputDecoration(context),
-                    textCapitalization: TextCapitalization.sentences,
-                  ),
+                  child: !kIsWeb &&
+                          onNewLineAction != null &&
+                          onEnterAction != null
+                      ? textField
+                      : KeysHandler(
+                          onNewLineAction: onNewLineAction!,
+                          onEnterAction: (intent) => onEnterAction!(
+                            intent,
+                            mentionedUsersIds,
+                          ),
+                          child: textField,
+                        ),
                 ),
               ],
             ),
