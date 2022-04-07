@@ -207,6 +207,7 @@ class MessageInput extends StatefulWidget {
     this.shouldKeepFocusAfterMessage,
     this.onNewLineAction,
     this.onEnterAction,
+    this.teamsBuilder,
   })  : assert(
           initialMessage == null || editMessage == null,
           "Can't provide both `initialMessage` and `editMessage`",
@@ -337,6 +338,9 @@ class MessageInput extends StatefulWidget {
 
   /// Method to handle enter keypress on desktop platforms
   final void Function(Intent, List<String>)? onEnterAction;
+
+  /// Builder to display teams available to be mentioned.
+  final Widget Function(String)? teamsBuilder;
 
   @override
   MessageInputState createState() => MessageInputState();
@@ -1247,6 +1251,7 @@ class MessageInputState extends State<MessageInput> {
     return UserMentionsOverlay(
       closeOverlay: () => setState(() => _showMentionsOverlay = false),
       controller: textEditingController,
+      teamsBuilder: widget.teamsBuilder,
       query: query,
       mentionAllAppUsers: widget.mentionAllAppUsers,
       client: StreamChat.of(context).client,

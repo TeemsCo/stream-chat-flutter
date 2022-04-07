@@ -7,9 +7,17 @@ class CustomTextController extends TextEditingController {
   ///Set of Roger available users.
   final Set<User> users = {};
 
+  ///Set of Roger available teams names.
+  final Set<String> teamNames = {};
+
   ///Method used to add Roger available users to the text controller.
   void addUsers(Set<User> newUsers) {
     users.addAll(newUsers);
+  }
+
+  ///Method used to add Roger available team names to the text controller.
+  void addTeamNames(Set<String> newTeamNames) {
+    teamNames.addAll(newTeamNames);
   }
 
   @override
@@ -19,12 +27,16 @@ class CustomTextController extends TextEditingController {
     required bool withComposing,
   }) =>
       TextSpan(
-        children: _mentionBuilder(text, users),
+        children: _mentionBuilder(text, users, teamNames),
         style: const TextStyle(color: Colors.black),
       );
 }
 
-List<InlineSpan> _mentionBuilder(String text, Set<User> users) {
+List<InlineSpan> _mentionBuilder(
+  String text,
+  Set<User> users,
+  Set<String> teamNames,
+) {
   final styledWords = <TextSpan>[];
   final namesAsMentions = <String>[];
   var editedText = text;
@@ -35,6 +47,13 @@ List<InlineSpan> _mentionBuilder(String text, Set<User> users) {
       namesAsMentions.add(nameAsMention);
       editedText = editedText.replaceAll(nameAsMention, '|||@${user.name}|||');
     }
+
+    for (final teamName in teamNames) {
+      final nameAsMention = '@$teamName';
+      namesAsMentions.add(nameAsMention);
+      editedText = editedText.replaceAll(nameAsMention, '|||@$teamName|||');
+    }
+
     final splittedMessage = editedText.split('|||');
 
     styledWords.addAll(

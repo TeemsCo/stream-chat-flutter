@@ -27,6 +27,7 @@ class UserMentionsOverlay extends StatefulWidget {
     this.limit = 10,
     this.mentionAllAppUsers = false,
     this.mentionsTileBuilder,
+    this.teamsBuilder,
     this.onMentionUserTap,
   })  : assert(
           channel.state != null,
@@ -66,6 +67,9 @@ class UserMentionsOverlay extends StatefulWidget {
 
   /// Customize the tile for the mentions overlay.
   final MentionTileBuilder? mentionsTileBuilder;
+
+  /// Builder to display teams available to be mentioned.
+  final Widget Function(String)? teamsBuilder;
 
   /// Callback called when a user is selected.
   final void Function(User user)? onMentionUserTap;
@@ -139,24 +143,67 @@ class _UserMentionsOverlayState extends State<UserMentionsOverlay> {
                     ..sort((a, b) =>
                         (b.lastActive ?? now).compareTo(a.lastActive ?? now));
 
-                  return ListView.builder(
-                    padding: const EdgeInsets.all(0),
-                    shrinkWrap: true,
-                    itemCount: users.length,
-                    itemBuilder: (context, index) {
-                      final user = users[index];
-                      return Material(
-                        color: isDesktop
-                            ? Colors.grey[50]
-                            : theme.colorTheme.barsBg,
-                        child: InkWell(
-                          onTap: () => widget.onMentionUserTap?.call(user),
-                          child:
-                              widget.mentionsTileBuilder?.call(context, user) ??
-                                  UserMentionTile(user),
-                        ),
-                      );
-                    },
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (widget.teamsBuilder != null)
+                        Flexible(child: widget.teamsBuilder!(widget.query)),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(
+                              left: 20,
+                              top: 14,
+                              bottom: 6,
+                            ),
+                            child: Text(
+                              'Users',
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          if (users.isEmpty)
+                            Container(
+                              padding: const EdgeInsets.only(
+                                left: 20,
+                                bottom: 20,
+                              ),
+                              width: double.infinity,
+                              child: const Text(
+                                'No match',
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            )
+                          else
+                            ListView.builder(
+                              padding: const EdgeInsets.all(0),
+                              shrinkWrap: true,
+                              itemCount: users.length,
+                              itemBuilder: (context, index) {
+                                final user = users[index];
+                                return Material(
+                                  color: isDesktop
+                                      ? Colors.white
+                                      : theme.colorTheme.barsBg,
+                                  child: InkWell(
+                                    onTap: () =>
+                                        widget.onMentionUserTap?.call(user),
+                                    child: widget.mentionsTileBuilder
+                                            ?.call(context, user) ??
+                                        UserMentionTile(user),
+                                  ),
+                                );
+                              },
+                            ),
+                        ],
+                      ),
+                    ],
                   );
                 },
               ),
