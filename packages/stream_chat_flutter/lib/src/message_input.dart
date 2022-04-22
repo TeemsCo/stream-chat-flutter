@@ -208,6 +208,7 @@ class MessageInput extends StatefulWidget {
     this.onNewLineAction,
     this.onEnterAction,
     this.teamsBuilder,
+    this.isMentionsEnabled = true,
   })  : assert(
           initialMessage == null || editMessage == null,
           "Can't provide both `initialMessage` and `editMessage`",
@@ -341,6 +342,9 @@ class MessageInput extends StatefulWidget {
 
   /// Builder to display teams available to be mentioned.
   final Widget Function(String)? teamsBuilder;
+
+  /// Flag to enable or disable the mentioning feature
+  final bool isMentionsEnabled;
 
   @override
   MessageInputState createState() => MessageInputState();
@@ -962,7 +966,8 @@ class MessageInputState extends State<MessageInput> {
   }
 
   void _checkMentions(String s, BuildContext context) {
-    if (s.isNotEmpty &&
+    if (widget.isMentionsEnabled &&
+        s.isNotEmpty &&
         textEditingController.selection.baseOffset > 0 &&
         textEditingController.text
             .substring(0, textEditingController.selection.baseOffset)
