@@ -786,10 +786,11 @@ class MessageInputState extends State<MessageInput> {
                       ? textField
                       : KeysHandler(
                           onNewLineAction: onNewLineAction!,
-                          onEnterAction: (intent) => onEnterAction!(
-                            intent,
-                            mentionedUsersIds,
-                          ),
+                          onEnterAction: (intent) {
+                            final users = List<String>.from(mentionedUsersIds);
+                            onEnterAction!(intent, users);
+                            _mentionedUsers.clear();
+                          },
                           child: textField,
                         ),
                 ),
