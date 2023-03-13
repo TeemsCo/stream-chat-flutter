@@ -1,3 +1,4 @@
+# This is a fork from GetStream/stream-chat-flutter.  Started with copy of v5.3.0 on 3/13/23 by MJF.
 # Official Flutter packages for [Stream Chat](https://getstream.io/chat/sdk/flutter/)
 
 ![](https://raw.githubusercontent.com/GetStream/stream-chat-flutter/master/images/sdk_hero_v4.png)
