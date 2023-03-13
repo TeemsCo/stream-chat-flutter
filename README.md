@@ -1,3 +1,4 @@
+# This is a copy of GetStream/stream-chat-flutter for Roger.  Make minimal changes for Roger on this branch.
 # Official Flutter packages for [Stream Chat](https://getstream.io/chat/sdk/flutter/)
 
 ![](https://raw.githubusercontent.com/GetStream/stream-chat-flutter/master/images/sdk_hero_v4.png)
