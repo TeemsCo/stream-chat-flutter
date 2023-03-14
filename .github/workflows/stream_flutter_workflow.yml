@@ -7,10 +7,10 @@ env:
 
 on:
   pull_request:
-  push:
-    branches:
-      - master
-      - develop
+#  push:
+#    branches:
+#      - master
+#      - develop
 
 jobs:
   analyze:
